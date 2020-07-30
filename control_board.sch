@@ -24631,6 +24631,7 @@ Source: www.farnell.com/datasheets/247.pdf</description>
 <part name="GND46" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="JP13" library="pinhead-2" deviceset="PINHD-2X12" device="_2.54-SMD"/>
 <part name="GND47" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND50" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -27971,6 +27972,9 @@ Source: www.farnell.com/datasheets/247.pdf</description>
 <instance part="GND47" gate="1" x="-180.34" y="187.96" smashed="yes">
 <attribute name="VALUE" x="-182.88" y="185.42" size="1.778" layer="96"/>
 </instance>
+<instance part="GND50" gate="1" x="-162.56" y="-22.86" smashed="yes">
+<attribute name="VALUE" x="-165.1" y="-25.4" size="1.778" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -28889,6 +28893,20 @@ Source: www.farnell.com/datasheets/247.pdf</description>
 <wire x1="-167.64" y1="198.12" x2="-180.34" y2="198.12" width="0.1524" layer="91"/>
 <junction x="-180.34" y="198.12"/>
 <pinref part="GND47" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="GND1"/>
+<wire x1="-162.56" y1="-5.08" x2="-162.56" y2="-15.24" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="G$1" pin="GND3"/>
+<wire x1="-162.56" y1="-15.24" x2="-162.56" y2="-20.32" width="0.1524" layer="91"/>
+<wire x1="-157.48" y1="-5.08" x2="-157.48" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="-157.48" y1="-15.24" x2="-162.56" y2="-15.24" width="0.1524" layer="91"/>
+<junction x="-162.56" y="-15.24"/>
+<pinref part="U$1" gate="G$1" pin="GND6"/>
+<wire x1="-149.86" y1="-5.08" x2="-149.86" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="-149.86" y1="-15.24" x2="-157.48" y2="-15.24" width="0.1524" layer="91"/>
+<junction x="-157.48" y="-15.24"/>
+<pinref part="GND50" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="DAC2_7" class="0">
