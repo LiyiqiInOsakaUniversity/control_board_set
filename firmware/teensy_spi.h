@@ -1,6 +1,7 @@
 #ifndef TEENSY_SPI_H
 #define TEENSY_SPI_H
 
+#include <SPI.h>
 #include "embedded_spi.h"
 #include "teensy_gpio.h"
 
@@ -40,6 +41,8 @@ public:
 
 private:
   Teensy_GPIO *_gpio;
+  SPISettings *_spi_settings;
+
 };
 
 

@@ -34350,14 +34350,14 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <part name="S1" library="1MS1T1B1M2QES-5" deviceset="1MS1T1B1M2QES-5" device="" value=""/>
 <part name="GND135" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND136" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R1" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:26059/1" value="68"/>
-<part name="R3" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:26059/1" value="68"/>
-<part name="R5" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:26059/1" value="220"/>
-<part name="R10" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:26059/1" value="680"/>
+<part name="R1" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:26059/1" value="120"/>
+<part name="R3" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:26059/1" value="120"/>
+<part name="R5" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:26059/1" value="330"/>
+<part name="R10" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:26059/1" value="1k"/>
 <part name="P+54" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="+5V" device=""/>
 <part name="X1" library="con-molex" library_urn="urn:adsk.eagle:library:165" deviceset="22-23-2031" device=""/>
 <part name="GND150" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="R11" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:26059/1" value="330"/>
+<part name="R11" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="R0805" package3d_urn="urn:adsk.eagle:package:26059/1" value="120"/>
 <part name="C9" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="CPOL-EU" device="SMCA" package3d_urn="urn:adsk.eagle:package:25926/1" value="10uF"/>
 <part name="C10" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="CPOL-EU" device="SMCA" package3d_urn="urn:adsk.eagle:package:25926/1" value="10uF"/>
 <part name="C21" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="CPOL-EU" device="SMCA" package3d_urn="urn:adsk.eagle:package:25926/1" value="10uF"/>

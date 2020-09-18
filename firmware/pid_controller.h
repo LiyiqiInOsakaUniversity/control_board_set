@@ -5,7 +5,7 @@
 #pragma once
 
 #include <inttypes.h>
-
+#include <Arduino.h>
 
 class PidController {
 public:
@@ -21,7 +21,7 @@ public:
     float ed;
     float t;
   };
-  
+
   PidController(const float &kp, const float &ki, const float &kd);
   virtual ~PidController();
 

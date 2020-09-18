@@ -13,8 +13,8 @@ void AD7616::prepareChannel(uint8_t channel, int cs){
   _dev->transferSPI(cs, 4, _channel_select_command, _rx_buffer);
 
   //Dummy read to get rid of values of the last measurement
-  _gpio->set_output(_trigger_measurement_gpio, Embedded_GPIO::gpio_state::EMB_OFF);
   _gpio->set_output(_trigger_measurement_gpio, Embedded_GPIO::gpio_state::EMB_ON);
+  _gpio->set_output(_trigger_measurement_gpio, Embedded_GPIO::gpio_state::EMB_OFF);
 
 
   _dev->transferSPI(cs, 4, _channel_select_command, _rx_buffer);
@@ -23,8 +23,8 @@ void AD7616::prepareChannel(uint8_t channel, int cs){
 uint32_t  AD7616::getMeasurementPair(int cs, uint8_t channel){
   prepareChannel(channel, cs);
 
-  _gpio->set_output(_trigger_measurement_gpio, Embedded_GPIO::gpio_state::EMB_OFF);
   _gpio->set_output(_trigger_measurement_gpio, Embedded_GPIO::gpio_state::EMB_ON);
+  _gpio->set_output(_trigger_measurement_gpio, Embedded_GPIO::gpio_state::EMB_OFF);
 
   _dev->transferSPI(cs, 4, _tx_buffer, _rx_buffer);
 

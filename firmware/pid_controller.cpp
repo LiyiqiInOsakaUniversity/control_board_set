@@ -2,7 +2,6 @@
 // Created by kzm4269 on 16/06/07.
 //
 
-#include <Arduino.h>
 #include "pid_controller.h"
 
 PidController::PidController(const float &kp, const float &ki, const float &kd) {

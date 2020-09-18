@@ -17,6 +17,8 @@
 #define AD5360_DEFAULT_GAIN 0xFFFF
 #define AD5360_DEFAULT_OFFSET 0x8000
 
+#define AD5360_RESOLUTION 14
+
 /**
  * Represents the AD5360 Digital Analog Converter of Analog Devices.
  * Provides functionalities so set output voltage based on a 3V reference voltage
@@ -80,6 +82,8 @@ public:
 private:
   Embedded_SPI *_dev;
   uint8_t _spi_tx_buffer[AD5360_SPI_TX_BUFFER_LEN];
+  uint8_t _dac_resolution_size;
+  uint8_t _dac_resolution_size_2;
 
   void buildDataCommandHeader(uint8_t group, uint8_t channel);
 

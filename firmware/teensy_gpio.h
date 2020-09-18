@@ -1,6 +1,7 @@
 #ifndef TEENSY_PI_GPIO_H
 #define TEENSY_PI_GPIO_H
 
+#include <Arduino.h>
 #include "embedded_gpio.h"
 
 class Teensy_GPIO : public Embedded_GPIO {
