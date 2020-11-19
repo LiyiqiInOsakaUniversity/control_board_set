@@ -17,7 +17,7 @@
 #define AD5360_DEFAULT_GAIN 0xFFFF
 #define AD5360_DEFAULT_OFFSET 0x8000
 
-#define AD5360_RESOLUTION 14
+#define AD5360_RESOLUTION 16
 
 /**
  * Represents the AD5360 Digital Analog Converter of Analog Devices.

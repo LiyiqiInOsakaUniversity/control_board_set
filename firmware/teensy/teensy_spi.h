@@ -43,6 +43,8 @@ private:
   Teensy_GPIO *_gpio;
   SPISettings *_spi_settings;
 
+  void micro_wait();
+
 };
 
 

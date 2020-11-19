@@ -2,8 +2,6 @@
 
 AD5360::AD5360(Embedded_SPI *dev) {
   _dev = dev;
-  _dac_resolution_size = pow(2, AD5360_RESOLUTION);
-  _dac_resolution_size_2 = pow(2, AD5360_RESOLUTION - 1);
 }
 
 void AD5360::setVoltage(int cs, uint8_t group, uint8_t channel, double voltage) {
@@ -64,20 +62,20 @@ void AD5360::buildOffsetCommandHeader(uint8_t group, uint8_t channel) {
 
 void AD5360::buildDataCommandValue(double voltage) {
   if (voltage == 0.0) {
-    uint16_t command_data = _dac_resolution_size / 2;
+    uint16_t command_data = pow(2, 16) / 2;
     _spi_tx_buffer[1] = (uint8_t) ((command_data & 0xFF00) >> 8);
     _spi_tx_buffer[2] = (uint8_t) (command_data & 0x00FF);
   } else if (voltage <= (2 * AD5360_REF_VOLTAGE) * -1) {
     _spi_tx_buffer[1] = 0;
     _spi_tx_buffer[2] = 0;
   } else if (voltage >= (2 * AD5360_REF_VOLTAGE)) {
-    uint16_t command_data = _dac_resolution_size - 1;
+    uint16_t command_data = pow(2, 16) - 1;
     _spi_tx_buffer[1] = (uint8_t) ((command_data & 0xFF00) >> 8);
     _spi_tx_buffer[2] = (uint8_t) (command_data & 0x00FF);
   } else {
 
-    uint16_t command_data = _dac_resolution_size / 2;
-    uint16_t value = fabs(voltage) / ((AD5360_REF_VOLTAGE * 2) / _dac_resolution_size_2);
+    uint16_t command_data = pow(2, 16) / 2;
+    uint16_t value = fabs(voltage) / ((AD5360_REF_VOLTAGE * 2) / pow(2, 15));
 
     if (voltage > 0) {
       command_data += value;
