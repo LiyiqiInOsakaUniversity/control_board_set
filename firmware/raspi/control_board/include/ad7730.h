@@ -79,7 +79,7 @@
 
 //current settings
 #define CURRENT_MODE_1_SETTINGS (MR1_BU_UNIPOLAR | MR1_WL_24_BIT)
-#define CURRENT_MODE_0_SETTINGS (MR0_HIREF_5V | MR0_RANGE_10MV | MR0_CHANNEL_1)
+#define CURRENT_MODE_0_SETTINGS (MR0_HIREF_5V | MR0_RANGE_80MV | MR0_CHANNEL_1)
 
 
 
@@ -93,7 +93,7 @@ public:
 
   void softReset();
 
-  void initConversion(uint8_t channel);
+  void initConversion();
 
   bool isReady();
 
@@ -111,7 +111,10 @@ private:
   char _tx_command_buffer[AD7730_SPI_RX_BUFFER_LEN];
   uint8_t _filter_register[3] = {FR2_SINC_AVERAGING_256, FR1_SKIP_ON | FR1_FAST_OFF, FR0_CHOP_OFF};
   uint8_t _mode_register[2] = {0x51, 0xB4};
+  char _mode_register_2[2] = {0b00110000, 0b10110100};
   uint8_t _register_sizes[8] = {1, 3, 2, 3, 1, 3, 3, 3};
+
+  uint32_t _latest_data = 0;
 
   void readRegister(uint8_t reg, char data[]);
 

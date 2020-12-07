@@ -39,7 +39,6 @@ ControlBoard::ControlBoard()
     _load_cell[idx] = new AD7730(_spi, _gpio, _load_cell_cs[idx], _load_cell_rdy[idx]);
     _load_cell[idx]->softReset();
     _load_cell[idx]->setup();
-    //_load_cell[idx]->test();
   }
 }
 
@@ -59,11 +58,6 @@ ControlBoard::~ControlBoard() {
 
 void ControlBoard::update_inputs()
 {
-  for(uint8_t idx = 0; idx < 1; idx++)
-  {
-    _load_cell[0]->initConversion(_current_load_cell_channel);
-  }
-
   //ADC
   for(uint8_t idx = 0; idx < 8; idx++)
   {
@@ -74,15 +68,7 @@ void ControlBoard::update_inputs()
 
   for(uint8_t idx = 0; idx < 1; idx++)
   {
-    if (_current_load_cell_channel == 0)
-    {
-      _load_cell_data[idx * 2] = _load_cell[idx]->getResult();
-      _current_load_cell_channel = 1;
-    } else
-    {
-      _load_cell_data[idx * 2 + 1] = _load_cell[idx]->getResult();
-      _current_load_cell_channel = 0;
-    }
+    _load_cell_data[idx] = _load_cell[idx]->getResult();
   }
 }
 

@@ -13,7 +13,7 @@
 
 static ControlBoard control_board;
 
-void *controlLoop(void *)
+[[noreturn]] void *controlLoop(void *)
 {
   while(1)
   {
@@ -45,7 +45,7 @@ void *controlLoop(void *)
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     control_board.update_inputs();
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    std::cout << "Update took = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
+    //std::cout << "Update took = " << std::chrono::duration_cast<std::chrono::microseconds> (end - begin).count() << "[us]" << std::endl;
     //printf("Value 1: %d\n", control_board.getLoadCellData(0));
 
   }
