@@ -46,7 +46,7 @@ static ControlBoard control_board;
     control_board.update_inputs();
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     //std::cout << "Update took = " << std::chrono::duration_cast<std::chrono::microseconds> (end - begin).count() << "[us]" << std::endl;
-    //printf("Value 1: %d\n", control_board.getLoadCellData(0));
+    printf("Value 1: %d\n", control_board.getLoadCellData(0));
 
   }
 }

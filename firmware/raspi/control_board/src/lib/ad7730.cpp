@@ -9,14 +9,6 @@ AD7730::AD7730(Embedded_SPI *dev, Embedded_GPIO *gpio, uint8_t chip_select, uint
   _ready_signal = ready_signal;
 }
 
-void AD7730::updateFilter(const uint8_t *filter_register)
-{
-  _filter_register[0] = filter_register[0];
-  _filter_register[1] = filter_register[1];
-  _filter_register[2] = filter_register[2];
-  setup();
-}
-
 void AD7730::setup()
 {
   char filter[3] = {1,2,3};
@@ -82,18 +74,17 @@ void AD7730::test()
   getResult();
 }
 
-uint32_t AD7730::getResult()
+uint16_t AD7730::getResult()
 {
-  if(_gpio->read_input(_ready_signal) != Embedded_GPIO::OFF)
+  if(isReady())
   {
-    return _latest_data;
-  } else {
     char data[2];
     char dummy[2] = {0,0};
     _dev->transferSPI(_chip_select, 2, dummy, data);
-    //readRegister(CR_DATA_REGISTER, data);
-    printf("\nConversion Result: 0x%.2X,0x%.2X,0x%.2X\n", data[0], data[1]);
-    _latest_data = (uint32_t) data[0] << 16 | (uint32_t) data[1] << 8;
+    //printf("\nConversion Result: 0x%.2X,0x%.2X,0x%.2X\n", data[0], data[1]);
+    _latest_data = (uint16_t) data[0] << 8 | (uint16_t) data[1];
+    return _latest_data;
+  } else {
     return _latest_data;
   }
 }

@@ -50,7 +50,7 @@ private:
                            RPI_V2_GPIO_P1_31, RPI_V2_GPIO_P1_32, RPI_V2_GPIO_P1_33, RPI_V2_GPIO_P1_35};
 
   uint16_t _adc_data[16];
-  uint32_t _load_cell_data[8];
+  uint16_t _load_cell_data[8];
 };
 
 #endif //CONTROL_BOARD_H
