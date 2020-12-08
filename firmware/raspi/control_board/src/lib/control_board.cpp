@@ -31,7 +31,7 @@ ControlBoard::ControlBoard()
   _gpio->set_output(_heartbeat_pin, Embedded_GPIO::gpio_state::OFF);
 
   //LoadCells
-  for(uint8_t idx = 0; idx < 1; idx++)
+  for(uint8_t idx = 0; idx < NUMBER_OF_TRANSDUCERS; idx++)
   {
     _gpio->set_mode(_load_cell_cs[idx], Embedded_GPIO::gpio_mode::OUTPUT);
     _gpio->set_output(_load_cell_cs[idx], Embedded_GPIO::gpio_state::ON);
@@ -48,7 +48,7 @@ ControlBoard::~ControlBoard() {
   delete _spi;
   delete _gpio;
 
-  for(uint8_t idx = 0; idx < 8; idx++)
+  for(uint8_t idx = 0; idx < NUMBER_OF_TRANSDUCERS; idx++)
   {
     delete _load_cell[idx];
   }
@@ -66,7 +66,7 @@ void ControlBoard::update_inputs()
     _adc_data[idx] = (uint16_t) (adc_rx & 0x0000FFFF);
   }
 
-  for(uint8_t idx = 0; idx < 1; idx++)
+  for(uint8_t idx = 0; idx < NUMBER_OF_TRANSDUCERS; idx++)
   {
     _load_cell_data[idx] = _load_cell[idx]->getResult();
   }

@@ -8,6 +8,8 @@
 #include <ad7616.h>
 #include <ad7730.h>
 
+#define NUMBER_OF_TRANSDUCERS 8
+
 class ControlBoard{
 public:
   ControlBoard();
@@ -30,7 +32,7 @@ public:
 private:
   AD5360 *_dac;
   AD7616 *_adc;
-  AD7730 *_load_cell[8];
+  AD7730 *_load_cell[NUMBER_OF_TRANSDUCERS];
   RaspberryPi_SPI *_spi;
   RaspberryPi_GPIO *_gpio;
 
@@ -43,14 +45,14 @@ private:
   int _adc_cs = RPI_V2_GPIO_P1_07;
   int _dac_cs = RPI_V2_GPIO_P1_12;
 
-  int _load_cell_cs[8] = {RPI_V2_GPIO_P1_29, RPI_V2_GPIO_P1_26, RPI_V2_GPIO_P1_24, RPI_V2_GPIO_P1_22,
+  int _load_cell_cs[NUMBER_OF_TRANSDUCERS] = {RPI_V2_GPIO_P1_29, RPI_V2_GPIO_P1_26, RPI_V2_GPIO_P1_24, RPI_V2_GPIO_P1_22,
                           RPI_V2_GPIO_P1_40, RPI_V2_GPIO_P1_38, RPI_V2_GPIO_P1_37, RPI_V2_GPIO_P1_36};
 
-  int _load_cell_rdy[8] = {RPI_V2_GPIO_P1_13, RPI_V2_GPIO_P1_15, RPI_V2_GPIO_P1_16, RPI_V2_GPIO_P1_18,
+  int _load_cell_rdy[NUMBER_OF_TRANSDUCERS] = {RPI_V2_GPIO_P1_13, RPI_V2_GPIO_P1_15, RPI_V2_GPIO_P1_16, RPI_V2_GPIO_P1_18,
                            RPI_V2_GPIO_P1_31, RPI_V2_GPIO_P1_32, RPI_V2_GPIO_P1_33, RPI_V2_GPIO_P1_35};
 
   uint16_t _adc_data[16];
-  uint16_t _load_cell_data[8];
+  uint16_t _load_cell_data[NUMBER_OF_TRANSDUCERS];
 };
 
 #endif //CONTROL_BOARD_H
