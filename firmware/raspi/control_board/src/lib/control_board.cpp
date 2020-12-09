@@ -62,8 +62,8 @@ void ControlBoard::update_inputs()
   for(uint8_t idx = 0; idx < 8; idx++)
   {
     uint32_t adc_rx = _adc->getMeasurementPair(_adc_cs, idx);
-    _adc_data[15 - idx] = (uint16_t) ((adc_rx & 0xFFFF0000) >> 16);
-    _adc_data[idx] = (uint16_t) (adc_rx & 0x0000FFFF);
+    _adc_data[idx] = (uint16_t) ((adc_rx & 0xFFFF0000) >> 16);
+    _adc_data[15 - idx] = (uint16_t) (adc_rx & 0x0000FFFF);
   }
 
   for(uint8_t idx = 0; idx < NUMBER_OF_TRANSDUCERS; idx++)
