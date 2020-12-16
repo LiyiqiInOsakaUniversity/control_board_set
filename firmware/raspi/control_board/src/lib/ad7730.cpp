@@ -9,20 +9,13 @@ AD7730::AD7730(Embedded_SPI *dev, Embedded_GPIO *gpio, uint8_t chip_select, uint
   _ready_signal = ready_signal;
 }
 
-void AD7730::updateFilter(const uint8_t *filter_register)
-{
-  _filter_register[0] = filter_register[0];
-  _filter_register[1] = filter_register[1];
-  _filter_register[2] = filter_register[2];
-  setup();
-}
-
 void AD7730::setup()
 {
   char filter[3] = {1,2,3};
   readRegister(CR_FILTER_REGISTER, filter);
   writeRegister(CR_FILTER_REGISTER, (char*)_filter_register);
   readRegister(CR_FILTER_REGISTER, filter);
+  initConversion();
 }
 
 void AD7730::softReset()
@@ -51,19 +44,11 @@ void AD7730::writeRegister(uint8_t reg, char data[])
   _dev->transferSPI(_chip_select, _register_sizes[reg], data);
 }
 
-void AD7730::initConversion(uint8_t channel)
+void AD7730::initConversion()
 {
-  char channel_part = 0;
-  if(channel == 0)
-  {
-    channel_part = _mode_register[1] | MR0_CHANNEL_1;
-  } else
-  {
-    channel_part = _mode_register[1] | MR0_CHANNEL_2;
-  }
-  char conversion_command[2] = {(char)_mode_register[0], channel_part};
-  //printf("Conversion Command: 0x%.2X,0x%.2X\n", conversion_command[0], conversion_command[1]);
-  writeRegister(CR_MODE_REGISTER, conversion_command);
+  char conversion_command[2] = {MR1_MODE_CONTINUOUS | CURRENT_MODE_1_SETTINGS, (char)CURRENT_MODE_0_SETTINGS};
+  writeRegister(CR_MODE_REGISTER, _mode_register_2);
+  setCommunicationMode(CR_CONTINUOUS_READ_START, CR_DATA_REGISTER);
 }
 
 bool AD7730::isReady()
@@ -85,20 +70,21 @@ void AD7730::test()
   readRegister(CR_FILTER_REGISTER, filter);
   printf("Read Filter as: 0x%.2X,0x%.2X,0x%.2X\n", filter[0], filter[1], filter[2]);
 
-
-  initConversion(0);
+  initConversion();
   getResult();
 }
 
-uint32_t AD7730::getResult()
+uint16_t AD7730::getResult()
 {
-  while(_gpio->read_input(_ready_signal) != Embedded_GPIO::OFF)
+  if(isReady())
   {
-    //printf(".");
+    char data[2];
+    char dummy[2] = {0,0};
+    _dev->transferSPI(_chip_select, 2, dummy, data);
+    //printf("\nConversion Result: 0x%.2X,0x%.2X,0x%.2X\n", data[0], data[1]);
+    _latest_data = (uint16_t) data[0] << 8 | (uint16_t) data[1];
+    return _latest_data;
+  } else {
+    return _latest_data;
   }
-  char data[3];
-  readRegister(CR_DATA_REGISTER, data);
-  //printf("\nConversion Result: 0x%.2X,0x%.2X,0x%.2X\n", data[0], data[1], data[2]);
-  uint32_t ret = (uint32_t) data[0] << 16 | (uint32_t) data[1] << 8 | (uint32_t) data[2];
-  return ret;
 }

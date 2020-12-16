@@ -31,7 +31,7 @@ ControlBoard::ControlBoard()
   _gpio->set_output(_heartbeat_pin, Embedded_GPIO::gpio_state::OFF);
 
   //LoadCells
-  for(uint8_t idx = 0; idx < 1; idx++)
+  for(uint8_t idx = 0; idx < NUMBER_OF_TRANSDUCERS; idx++)
   {
     _gpio->set_mode(_load_cell_cs[idx], Embedded_GPIO::gpio_mode::OUTPUT);
     _gpio->set_output(_load_cell_cs[idx], Embedded_GPIO::gpio_state::ON);
@@ -39,7 +39,6 @@ ControlBoard::ControlBoard()
     _load_cell[idx] = new AD7730(_spi, _gpio, _load_cell_cs[idx], _load_cell_rdy[idx]);
     _load_cell[idx]->softReset();
     _load_cell[idx]->setup();
-    //_load_cell[idx]->test();
   }
 }
 
@@ -49,7 +48,7 @@ ControlBoard::~ControlBoard() {
   delete _spi;
   delete _gpio;
 
-  for(uint8_t idx = 0; idx < 8; idx++)
+  for(uint8_t idx = 0; idx < NUMBER_OF_TRANSDUCERS; idx++)
   {
     delete _load_cell[idx];
   }
@@ -59,30 +58,17 @@ ControlBoard::~ControlBoard() {
 
 void ControlBoard::update_inputs()
 {
-  for(uint8_t idx = 0; idx < 1; idx++)
-  {
-    _load_cell[0]->initConversion(_current_load_cell_channel);
-  }
-
   //ADC
   for(uint8_t idx = 0; idx < 8; idx++)
   {
     uint32_t adc_rx = _adc->getMeasurementPair(_adc_cs, idx);
-    _adc_data[15 - idx] = (uint16_t) ((adc_rx & 0xFFFF0000) >> 16);
-    _adc_data[idx] = (uint16_t) (adc_rx & 0x0000FFFF);
+    _adc_data[idx] = (uint16_t) ((adc_rx & 0xFFFF0000) >> 16);
+    _adc_data[15 - idx] = (uint16_t) (adc_rx & 0x0000FFFF);
   }
 
-  for(uint8_t idx = 0; idx < 1; idx++)
+  for(uint8_t idx = 0; idx < NUMBER_OF_TRANSDUCERS; idx++)
   {
-    if (_current_load_cell_channel == 0)
-    {
-      _load_cell_data[idx * 2] = _load_cell[idx]->getResult();
-      _current_load_cell_channel = 1;
-    } else
-    {
-      _load_cell_data[idx * 2 + 1] = _load_cell[idx]->getResult();
-      _current_load_cell_channel = 0;
-    }
+    _load_cell_data[idx] = _load_cell[idx]->getResult();
   }
 }
 
