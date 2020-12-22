@@ -21,28 +21,28 @@ static ControlBoard control_board;
   Muscle::pid_cfg_t pid_conf = {.p = 40.0, .i = 30.0, .d = 0.1, .lower_clamp = -4.5, .upper_clamp = 4.5};
 
   //Muscles are numbered by their order of labels in the setup. Indices are based on the hardware's channel numbers
-  Muscle::muscle_cfg_t muscle_conf_0 = {.adc_index = 0, .dac_index = 0, .tension_sensor_index = 0,
+  Muscle::muscle_cfg_t muscle_conf_0 = {.adc_index = 0, .dac_index = 8, .tension_sensor_index = 0,
                                         .pid_cfg = pid_conf, .board = &control_board};
 
-  Muscle::muscle_cfg_t muscle_conf_1 = {.adc_index = 0, .dac_index = 0, .tension_sensor_index = 1,
+  Muscle::muscle_cfg_t muscle_conf_1 = {.adc_index = 1, .dac_index = 9, .tension_sensor_index = 1,
                                         .pid_cfg = pid_conf, .board = &control_board};
 
-  Muscle::muscle_cfg_t muscle_conf_2 = {.adc_index = 0, .dac_index = 0, .tension_sensor_index = 2,
+  Muscle::muscle_cfg_t muscle_conf_2 = {.adc_index = 2, .dac_index = 10, .tension_sensor_index = 2,
                                         .pid_cfg = pid_conf, .board = &control_board};
 
-  Muscle::muscle_cfg_t muscle_conf_3 = {.adc_index = 0, .dac_index = 0, .tension_sensor_index = 3,
+  Muscle::muscle_cfg_t muscle_conf_3 = {.adc_index = 3, .dac_index = 11, .tension_sensor_index = 3,
                                         .pid_cfg = pid_conf, .board = &control_board};
 
-  Muscle::muscle_cfg_t muscle_conf_4 = {.adc_index = 0, .dac_index = 0, .tension_sensor_index = 4,
+  Muscle::muscle_cfg_t muscle_conf_4 = {.adc_index = 4, .dac_index = 12, .tension_sensor_index = 4,
                                         .pid_cfg = pid_conf, .board = &control_board};
 
-  Muscle::muscle_cfg_t muscle_conf_5 = {.adc_index = 0, .dac_index = 0, .tension_sensor_index = 5,
+  Muscle::muscle_cfg_t muscle_conf_5 = {.adc_index = 5, .dac_index = 13, .tension_sensor_index = 5,
                                         .pid_cfg = pid_conf, .board = &control_board};
 
-  Muscle::muscle_cfg_t muscle_conf_6 = {.adc_index = 0, .dac_index = 0, .tension_sensor_index = 6,
+  Muscle::muscle_cfg_t muscle_conf_6 = {.adc_index = 6, .dac_index = 14, .tension_sensor_index = 6,
                                         .pid_cfg = pid_conf, .board = &control_board};
 
-  Muscle::muscle_cfg_t muscle_conf_7 = {.adc_index = 0, .dac_index = 0, .tension_sensor_index = 7,
+  Muscle::muscle_cfg_t muscle_conf_7 = {.adc_index = 7, .dac_index = 15, .tension_sensor_index = 7,
                                         .pid_cfg = pid_conf, .board = &control_board};
 
   // Using auto to avoid repeating Classname
@@ -60,7 +60,7 @@ static ControlBoard control_board;
   // Shouldn't be a real problem at the end of a program but it is not a good style.
   // All memory allocated on the heap should be freed at one point.
 
-  while(1)
+  while(true)
   {
     //Update the board's inputs (ADC & Load Cells)
     //DACs are still updated on-demand
