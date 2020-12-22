@@ -4,7 +4,7 @@
 
 RaspberryPi_SPI::RaspberryPi_SPI(RaspberryPi_GPIO *gpio) : Embedded_SPI(gpio)
 {
-  _gpio = gpio;
+  gpio_ = gpio;
 
   if (bcm2835_spi_begin() != 1) {
     printf("bcm2835_spi_begin failed.");
@@ -24,16 +24,16 @@ RaspberryPi_SPI::~RaspberryPi_SPI()
 
 bool RaspberryPi_SPI::transferSPI(int cs, int data_len, char data[])
 {
-  _gpio->set_output(cs, Embedded_GPIO::gpio_state::OFF);
+  gpio_->set_output(cs, Embedded_GPIO::gpio_state::OFF);
   bcm2835_spi_transfern(data, data_len);
-  _gpio->set_output(cs, Embedded_GPIO::gpio_state::ON);
+  gpio_->set_output(cs, Embedded_GPIO::gpio_state::ON);
   return true;
 }
 
 bool RaspberryPi_SPI::transferSPI(int cs, int data_len, char data_tx[], char data_rx[])
 {
-  _gpio->set_output(cs, Embedded_GPIO::gpio_state::OFF);
+  gpio_->set_output(cs, Embedded_GPIO::gpio_state::OFF);
   bcm2835_spi_transfernb(data_tx, data_rx, data_len);
-  _gpio->set_output(cs, Embedded_GPIO::gpio_state::ON);
+  gpio_->set_output(cs, Embedded_GPIO::gpio_state::ON);
   return true;
 }

@@ -3,7 +3,7 @@
 
 AD5360::AD5360(Embedded_SPI *dev)
 {
-  _dev = dev;
+  dev_ = dev;
 }
 
 void AD5360::setVoltage(int cs, uint8_t group, uint8_t channel, double voltage)
@@ -49,46 +49,46 @@ void AD5360::reset(int cs, uint8_t group, uint8_t channel)
 void AD5360::writeCommand(int cs)
 {
   char data[3];
-  data[0] = _spi_tx_buffer[0];
-  data[1] = _spi_tx_buffer[1];
-  data[2] = _spi_tx_buffer[2];
-  _dev->transferSPI(cs, 3, data);
+  data[0] = spi_tx_buffer_[0];
+  data[1] = spi_tx_buffer_[1];
+  data[2] = spi_tx_buffer_[2];
+  dev_->transferSPI(cs, 3, data);
 }
 
 void AD5360::buildDataCommandHeader(uint8_t group, uint8_t channel)
 {
-  _spi_tx_buffer[0] = AD5360_MODE_WRITE_DAC_DATA;
-  _spi_tx_buffer[0] = _spi_tx_buffer[0] | (group + (uint8_t) 1) << 3;
-  _spi_tx_buffer[0] = _spi_tx_buffer[0] | channel;
+  spi_tx_buffer_[0] = AD5360_MODE_WRITE_DAC_DATA;
+  spi_tx_buffer_[0] = spi_tx_buffer_[0] | (group + (uint8_t) 1) << 3;
+  spi_tx_buffer_[0] = spi_tx_buffer_[0] | channel;
 }
 
 void AD5360::buildGainCommandHeader(uint8_t group, uint8_t channel)
 {
-  _spi_tx_buffer[0] = AD5360_MODE_WRITE_DAC_GAIN;
-  _spi_tx_buffer[0] = _spi_tx_buffer[0] | (group + (uint8_t) 1) << 3;
-  _spi_tx_buffer[0] = _spi_tx_buffer[0] | channel;
+  spi_tx_buffer_[0] = AD5360_MODE_WRITE_DAC_GAIN;
+  spi_tx_buffer_[0] = spi_tx_buffer_[0] | (group + (uint8_t) 1) << 3;
+  spi_tx_buffer_[0] = spi_tx_buffer_[0] | channel;
 }
 
 void AD5360::buildOffsetCommandHeader(uint8_t group, uint8_t channel)
 {
-  _spi_tx_buffer[0] = AD5360_MODE_WRITE_DAC_OFFSET;
-  _spi_tx_buffer[0] = _spi_tx_buffer[0] | (group + (uint8_t) 1) << 3;
-  _spi_tx_buffer[0] = _spi_tx_buffer[0] | channel;
+  spi_tx_buffer_[0] = AD5360_MODE_WRITE_DAC_OFFSET;
+  spi_tx_buffer_[0] = spi_tx_buffer_[0] | (group + (uint8_t) 1) << 3;
+  spi_tx_buffer_[0] = spi_tx_buffer_[0] | channel;
 }
 
 void AD5360::buildDataCommandValue(double voltage)
 {
   if (voltage == 0.0) {
     uint16_t command_data = pow(2, 16) / 2;
-    _spi_tx_buffer[1] = (uint8_t) ((command_data & 0xFF00) >> 8);
-    _spi_tx_buffer[2] = (uint8_t) (command_data & 0x00FF);
+    spi_tx_buffer_[1] = (uint8_t) ((command_data & 0xFF00) >> 8);
+    spi_tx_buffer_[2] = (uint8_t) (command_data & 0x00FF);
   } else if (voltage <= (2 * AD5360_REF_VOLTAGE) * -1) {
-    _spi_tx_buffer[1] = 0;
-    _spi_tx_buffer[2] = 0;
+    spi_tx_buffer_[1] = 0;
+    spi_tx_buffer_[2] = 0;
   } else if (voltage >= (2 * AD5360_REF_VOLTAGE)) {
     uint16_t command_data = pow(2, 16) - 1;
-    _spi_tx_buffer[1] = (uint8_t) ((command_data & 0xFF00) >> 8);
-    _spi_tx_buffer[2] = (uint8_t) (command_data & 0x00FF);
+    spi_tx_buffer_[1] = (uint8_t) ((command_data & 0xFF00) >> 8);
+    spi_tx_buffer_[2] = (uint8_t) (command_data & 0x00FF);
   } else {
 
     uint16_t command_data = pow(2, 16) / 2;
@@ -100,15 +100,15 @@ void AD5360::buildDataCommandValue(double voltage)
       command_data -= value;
     }
 
-    _spi_tx_buffer[1] = (uint8_t) ((command_data & 0xFF00) >> 8);
-    _spi_tx_buffer[2] = (uint8_t) (command_data & 0x00FF);
+    spi_tx_buffer_[1] = (uint8_t) ((command_data & 0xFF00) >> 8);
+    spi_tx_buffer_[2] = (uint8_t) (command_data & 0x00FF);
   }
 }
 
 void AD5360::buildCalibrationCommandValue(uint16_t value)
 {
-  _spi_tx_buffer[1] = (uint8_t) ((value & 0xFF00) >> 8);
-  _spi_tx_buffer[2] = (uint8_t) (value & 0x00FF);
+  spi_tx_buffer_[1] = (uint8_t) ((value & 0xFF00) >> 8);
+  spi_tx_buffer_[2] = (uint8_t) (value & 0x00FF);
 }
 
 double AD5360::map(double x, double in_min, double in_max, double out_min, double out_max)

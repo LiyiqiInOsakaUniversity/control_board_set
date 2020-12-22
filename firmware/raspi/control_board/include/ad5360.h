@@ -77,9 +77,11 @@ public:
    */
   void reset(int cs, uint8_t group, uint8_t channel);
 
+  static double map(double x, double in_min, double in_max, double out_min, double out_max);
+
 private:
-  Embedded_SPI *_dev;
-  uint8_t _spi_tx_buffer[AD5360_SPI_TX_BUFFER_LEN];
+  Embedded_SPI *dev_;
+  uint8_t spi_tx_buffer_[AD5360_SPI_TX_BUFFER_LEN];
 
   void buildDataCommandHeader(uint8_t group, uint8_t channel);
 
@@ -92,8 +94,6 @@ private:
   void buildCalibrationCommandValue(uint16_t value);
 
   void writeCommand(int cs);
-
-  double map(double x, double in_min, double in_max, double out_min, double out_max);
 
 };
 
