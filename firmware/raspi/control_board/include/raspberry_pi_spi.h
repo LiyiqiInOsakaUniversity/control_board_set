@@ -39,7 +39,7 @@ public:
   virtual bool transferSPI(int cs, int data_len, char data_tx[], char data_rx[]);
 
 private:
-  RaspberryPi_GPIO *_gpio;
+  RaspberryPi_GPIO *gpio_;
 };
 
 

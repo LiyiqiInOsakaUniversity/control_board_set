@@ -18,6 +18,8 @@ find_package(BCM2835 REQUIRED)
 
 SET(SOURCES
         src/lib/control_board.cpp
+        src/lib/muscle.cpp
+        src/lib/pid_controller.cpp
         src/lib/ad5360.cpp
         src/lib/ad7616.cpp
         src/lib/ad7730.cpp
@@ -41,3 +43,10 @@ target_link_libraries(board_test
         control_board
         ${Boost_LIBRARIES}
 )
+
+add_executable(muscle_test src/muscle_test.cpp)
+target_link_libraries(muscle_test
+        rt
+        control_board
+        ${Boost_LIBRARIES}
+        )

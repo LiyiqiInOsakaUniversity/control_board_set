@@ -100,19 +100,19 @@ public:
   uint16_t getResult();
 
 private:
-  Embedded_SPI *_dev;
-  Embedded_GPIO *_gpio;
-  uint8_t _chip_select;
-  uint8_t _ready_signal;
-  uint8_t _spi_tx_buffer[AD7730_SPI_TX_BUFFER_LEN];
-  char _spi_rx_buffer[AD7730_SPI_RX_BUFFER_LEN];
-  char _tx_command_buffer[AD7730_SPI_RX_BUFFER_LEN];
-  uint8_t _filter_register[3] = {FR2_SINC_AVERAGING_2048, FR1_SKIP_OFF | FR1_FAST_OFF, FR0_CHOP_OFF};
-  uint8_t _mode_register[2] = {0x51, 0xB4};
-  char _mode_register_2[2] = {0b00110000, 0b10110100};
-  uint8_t _register_sizes[8] = {1, 3, 2, 3, 1, 3, 3, 3};
+  Embedded_SPI *dev_;
+  Embedded_GPIO *gpio_;
+  uint8_t chip_select_;
+  uint8_t ready_signal_;
+  uint8_t spi_tx_buffer_[AD7730_SPI_TX_BUFFER_LEN];
+  char spi_rx_buffer_[AD7730_SPI_RX_BUFFER_LEN];
+  char tx_command_buffer_[AD7730_SPI_RX_BUFFER_LEN];
+  uint8_t filter_register_[3] = {FR2_SINC_AVERAGING_2048, FR1_SKIP_OFF | FR1_FAST_OFF, FR0_CHOP_OFF};
+  uint8_t mode_register_[2] = {0x51, 0xB4};
+  char mode_register_2_[2] = {(char)0b00110000, (char)0b10110100};
+  uint8_t register_sizes_[8] = {1, 3, 2, 3, 1, 3, 3, 3};
 
-  uint16_t _latest_data = 0;
+  uint16_t latest_data_ = 0;
 
   void readRegister(uint8_t reg, char data[]);
 

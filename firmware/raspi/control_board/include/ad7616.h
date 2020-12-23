@@ -23,17 +23,15 @@ public:
   uint32_t getMeasurementPair(int cs, uint8_t channel_pair);
 
 private:
-  Embedded_SPI *_dev;
-  Embedded_GPIO *_gpio;
-  int _trigger_measurement_gpio;
+  Embedded_SPI *dev_;
+  Embedded_GPIO *gpio_;
+  int trigger_measurement_gpio_;
 
   void prepareChannel(uint8_t channel, int cs);
 
-  char _rx_buffer[4] = {0,0,0,0};
-  char _tx_buffer[4] = {0,0,0,0};
-  char _channel_select_command[4] = {(char)0x86, (char)0x00, (char)0x86, (char)0x00};
-
-
+  char rx_buffer_[4] = {0, 0, 0, 0};
+  char tx_buffer_[4] = {0, 0, 0, 0};
+  char channel_select_command_[4] = {(char)0x86, (char)0x00, (char)0x86, (char)0x00};
 };
 
 
