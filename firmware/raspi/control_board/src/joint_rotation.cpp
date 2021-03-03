@@ -17,7 +17,7 @@
 #include <control_board.h>
 #include <muscle.h>
 
-#define PI acos(-1)
+//#define PI acos(-1)
 
 static ControlBoard control_board;
 
@@ -67,32 +67,40 @@ static ControlBoard control_board;
     // Shouldn't be a real problem at the end of a program but it is not a good style.
     // All memory allocated on the heap should be freed at one point.
     // int i = 0;
-
+    //存放拉力的数据
     uint16_t *tension_data_0 = new uint16_t[500];
     uint16_t *tension_data_1 = new uint16_t[500];
-
+    //存放压力的数据
     double *pressure_data_0 = new double[500];
     double *pressure_data_1 = new double[500];
 
-    int sample_count, temp = 0;
+    int sample_count = 0, temp = -1;
 
     double pressureList[10] = {0.2, 0.238197, 0.338197, 0.461803, 0.561803, 0.6, 0.561803, 0.461803, 0.338197, 0.238197};
     int cycle_time = 5000; //5000ms, = 5s
     std::chrono::steady_clock::time_point t_0 = std::chrono::steady_clock::now();
     while(true)
     {
-        //std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
         //Update the board's inputs (ADC & Load Cells)
         //DACs are still updated on-demand
         control_board.update_inputs();
+
         std::chrono::steady_clock::time_point t_1 = std::chrono::steady_clock::now();
-        auto t = std::chrono::duration_cast<std::chrono::milliseconds>(t_1 - t_0);
+        auto t = std::chrono::duration_cast<std::chrono::milliseconds>(t_1 - t_0); //时间
         if(sample_count > 499 ) break;
 
-        int _count = (10 * t.count() / cycle_time) % 10;
+        int _count = (10 * t.count() / cycle_time) % 10; //不断遍历之前给出的压力数值表，在一个时间周期内逐个计算index。
 
-        temp = sample_count;
-        sample_count = t.count() / 500; //Sampling Frequency = 50Hz, 每20ms采样一次
+
+        sample_count = t.count() / 20; //Sampling Frequency = 50Hz, 每20ms采样一次，一个周期可以采集250个数据。
+        if (sample_count >= 500) break;
+        if (sample_count != temp) {
+            temp = sample_count;
+            tension_data_0[sample_count] = control_board.getLoadCellData(0);
+            pressure_data_0[sample_count] = control_board.getInputPressure(0);
+            tension_data_1[sample_count] = control_board.getLoadCellData(1);
+            pressure_data_1[sample_count] = control_board.getInputPressure(1);
+        }
 
 
 
@@ -101,8 +109,8 @@ static ControlBoard control_board;
         //The update also always returns the current state of the muscle.
         //This is how the muscle state should be received and discarding the return value will result in a compiler warning
         Muscle::muscle_state_t s_0 = muscle_0->updateMuscle(m_cmd_0);
-        tension_data_0[sample_count] = control_board.getLoadCellData(0);
-        pressure_data_0[sample_count] = control_board.getInputPressure(0);
+        //tension_data_0[sample_count] = control_board.getLoadCellData(0);
+        //pressure_data_0[sample_count] = control_board.getInputPressure(0);
 
         //第二个muscle
         //double g_pressure = 0.2 * sin(2*PI*_count/10 - PI/2) + 0.3;
@@ -110,8 +118,8 @@ static ControlBoard control_board;
         double g_pressure = pressureList[_count];
         Muscle::muscle_cmd_t m_cmd_1 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = g_pressure, .goal_activation = 0.0};
         Muscle::muscle_state_t s_1 = muscle_1->updateMuscle(m_cmd_1);
-        tension_data_1[sample_count] = control_board.getLoadCellData(1);
-        pressure_data_1[sample_count] = control_board.getInputPressure(1);
+        //tension_data_1[sample_count] = control_board.getLoadCellData(1);
+        //pressure_data_1[sample_count] = control_board.getInputPressure(1);
 
 
         std::cout << "tension_0 = \t" << control_board.getLoadCellData(0) << "\ttension_1 = \t" << control_board.getLoadCellData(1) << std::endl;
