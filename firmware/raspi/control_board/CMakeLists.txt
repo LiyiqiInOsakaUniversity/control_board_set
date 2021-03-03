@@ -37,15 +37,22 @@ target_link_libraries(control_board
         ${BCM2835_LIBRARIES}
 )
 
-add_executable(board_test src/board_test.cpp)
-target_link_libraries(board_test
-        rt
-        control_board
-        ${Boost_LIBRARIES}
-)
+#add_executable(board_test src/board_test.cpp)
+#target_link_libraries(board_test
+#        rt
+#        control_board
+#        ${Boost_LIBRARIES}
+#)
 
-add_executable(muscle_test src/muscle_test.cpp)
-target_link_libraries(muscle_test
+#add_executable(muscle_test src/muscle_test.cpp)
+#target_link_libraries(muscle_test
+#        rt
+#        control_board
+#        ${Boost_LIBRARIES}
+#        )
+#add the executable of new file
+add_executable(joint_rotation src/joint_rotation.cpp)
+target_link_libraries(joint_rotation
         rt
         control_board
         ${Boost_LIBRARIES}
