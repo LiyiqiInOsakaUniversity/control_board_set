@@ -1,3 +1,6 @@
+#ifndef PID_CONTROLLER_h
+#define PID_CONTROLLER_h
+
 #include <chrono>
 
 class PidController {
@@ -31,3 +34,5 @@ private:
   double upper_clamp_;
   double output_;
 };
+
+#endif
