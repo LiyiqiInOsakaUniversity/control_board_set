@@ -122,7 +122,8 @@ static ControlBoard control_board;
         //pressure_data_1[sample_count] = control_board.getInputPressure(1);
 
 
-        std::cout << "tension_0 = \t" << control_board.getLoadCellData(0) << "\ttension_1 = \t" << control_board.getLoadCellData(1) << std::endl;
+        std::cout << "tension_0 = \t" << control_board.getLoadCellData(0) << "\ttension_1 = \t" << control_board.getLoadCellData(1)
+        << "\tpressure_0 = \t" << control_board.getInputPressure(0) << "\tpressure_1 = \t" << control_board.getInputPressure(1) << std::endl;
 
     }
 
@@ -134,10 +135,16 @@ static ControlBoard control_board;
 
     for (int i = 0; i < sample_count; i++)
     {
-        file << i << "\t" << tension_data_0[i] << "\t" << tension_data_1[i] << std::endl;
+        file << i << "\ttension_0\t" << tension_data_0[i] << "\ttension_1\t" << tension_data_1[i]
+        << "\tpressure_0\t" << pressure_data_0[i] << "\tpressure_1\t" <<pressure_data_1[i] << std::endl;
     }
     file.close();
     std::cout << "write finished"<< std::endl;
+
+    delete[] tension_data_0;
+    delete[] tension_data_1;
+    delete[] pressure_data_0;
+    delete[] pressure_data_1;
 }
 
 //The Main boilerplate code to set the controlLoop up to be executed with a high priority.
