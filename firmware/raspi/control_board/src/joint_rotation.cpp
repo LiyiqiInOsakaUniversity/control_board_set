@@ -42,7 +42,7 @@ static ControlBoard control_board;
 
     Muscle::muscle_cfg_t muscle_conf_4 = {.adc_index = 4, .dac_index = 12, .tension_sensor_index = 4,
             .pid_cfg = pid_conf, .board = &control_board};
-
+    //上面的金哥用了，我用5和6 （5是右边的肌肉，6是左边的肌肉）
     Muscle::muscle_cfg_t muscle_conf_5 = {.adc_index = 5, .dac_index = 13, .tension_sensor_index = 5,
             .pid_cfg = pid_conf, .board = &control_board};
 
@@ -96,34 +96,33 @@ static ControlBoard control_board;
         if (sample_count >= 500) break;
         if (sample_count != temp) {
             temp = sample_count;
-            tension_data_0[sample_count] = control_board.getLoadCellData(0);
-            pressure_data_0[sample_count] = control_board.getInputPressure(0);
-            tension_data_1[sample_count] = control_board.getLoadCellData(1);
-            pressure_data_1[sample_count] = control_board.getInputPressure(1);
+            tension_data_0[sample_count] = control_board.getLoadCellData(1);
+            pressure_data_0[sample_count] = control_board.getInputPressure(5);
+            tension_data_1[sample_count] = control_board.getLoadCellData(4);
+            pressure_data_1[sample_count] = control_board.getInputPressure(6);
         }
 
 
 
-        //Creating the command for controlling the muscle
-        Muscle::muscle_cmd_t m_cmd_0 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.2, .goal_activation = 0.0};
+        //Creating the command for controlling the muscle // Right muscle
+        Muscle::muscle_cmd_t m_cmd_5 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.2, .goal_activation = 0.0};
         //The update also always returns the current state of the muscle.
         //This is how the muscle state should be received and discarding the return value will result in a compiler warning
-        Muscle::muscle_state_t s_0 = muscle_0->updateMuscle(m_cmd_0);
+        Muscle::muscle_state_t s_5 = muscle_5->updateMuscle(m_cmd_5);
         //tension_data_0[sample_count] = control_board.getLoadCellData(0);
         //pressure_data_0[sample_count] = control_board.getInputPressure(0);
 
-        //第二个muscle
-        //double g_pressure = 0.2 * sin(2*PI*_count/10 - PI/2) + 0.3;
-        //_count++;
+        //第二个muscle //Left side
+
         double g_pressure = pressureList[_count];
-        Muscle::muscle_cmd_t m_cmd_1 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = g_pressure, .goal_activation = 0.0};
-        Muscle::muscle_state_t s_1 = muscle_1->updateMuscle(m_cmd_1);
+        Muscle::muscle_cmd_t m_cmd_6 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = g_pressure, .goal_activation = 0.0};
+        Muscle::muscle_state_t s_6 = muscle_6->updateMuscle(m_cmd_6);
         //tension_data_1[sample_count] = control_board.getLoadCellData(1);
         //pressure_data_1[sample_count] = control_board.getInputPressure(1);
 
 
-        std::cout << "tension_0 = \t" << control_board.getLoadCellData(0) << "\ttension_1 = \t" << control_board.getLoadCellData(1)
-        << "\tpressure_0 = \t" << control_board.getInputPressure(0) << "\tpressure_1 = \t" << control_board.getInputPressure(1) << std::endl;
+        std::cout << "tension_right = \t" << control_board.getLoadCellData(1) << "\ttension_left = \t" << control_board.getLoadCellData(4)
+        << "\tpressure_right = \t" << control_board.getInputPressure(5) << "\tpressure_left = \t" << control_board.getInputPressure(6) << std::endl;
 
     }
 
@@ -135,8 +134,8 @@ static ControlBoard control_board;
 
     for (int i = 0; i < sample_count; i++)
     {
-        file << i << "\ttension_0\t" << tension_data_0[i] << "\ttension_1\t" << tension_data_1[i]
-        << "\tpressure_0\t" << pressure_data_0[i] << "\tpressure_1\t" <<pressure_data_1[i] << std::endl;
+        file << i << "\ttension_right\t" << tension_data_0[i] << "\ttension_left\t" << tension_data_1[i]
+        << "\tpressure_right\t" << pressure_data_0[i] << "\tpressure_left\t" <<pressure_data_1[i] << std::endl;
     }
     file.close();
     std::cout << "write finished"<< std::endl;
