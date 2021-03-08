@@ -42,7 +42,8 @@ static ControlBoard control_board;
 
     Muscle::muscle_cfg_t muscle_conf_4 = {.adc_index = 4, .dac_index = 12, .tension_sensor_index = 4,
             .pid_cfg = pid_conf, .board = &control_board};
-    //上面的金哥用了，我用5和6 （5是右边的肌肉，6是左边的肌肉）
+
+    //上面的金哥用了，我用5和7 （5是右边的肌肉，7是左边的肌肉） 6的阀坏掉了
     Muscle::muscle_cfg_t muscle_conf_5 = {.adc_index = 5, .dac_index = 13, .tension_sensor_index = 5,
             .pid_cfg = pid_conf, .board = &control_board};
 
@@ -66,13 +67,25 @@ static ControlBoard control_board;
     // The program ends and we rely on the OS to clean up our mess.
     // Shouldn't be a real problem at the end of a program but it is not a good style.
     // All memory allocated on the heap should be freed at one point.
-    // int i = 0;
+    Muscle::muscle_cmd_t m_cmd_0 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_state_t s_0 = muscle_0->updateMuscle(m_cmd_0);
+    Muscle::muscle_cmd_t m_cmd_1 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_state_t s_1 = muscle_1->updateMuscle(m_cmd_1);
+    Muscle::muscle_cmd_t m_cmd_2 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_state_t s_2 = muscle_2->updateMuscle(m_cmd_2);
+    Muscle::muscle_cmd_t m_cmd_3 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_state_t s_3 = muscle_3->updateMuscle(m_cmd_3);
+    Muscle::muscle_cmd_t m_cmd_4 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_state_t s_4 = muscle_4->updateMuscle(m_cmd_4);
+    Muscle::muscle_cmd_t m_cmd_6 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_state_t s_6 = muscle_6->updateMuscle(m_cmd_6);
+
     //存放拉力的数据
-    uint16_t *tension_data_0 = new uint16_t[500];
-    uint16_t *tension_data_1 = new uint16_t[500];
+    uint16_t *tension_data_left = new uint16_t[500];
+    uint16_t *tension_data_right = new uint16_t[500];
     //存放压力的数据
-    double *pressure_data_0 = new double[500];
-    double *pressure_data_1 = new double[500];
+    double *pressure_data_left = new double[500];
+    double *pressure_data_right = new double[500];
 
     int sample_count = 0, temp = -1;
 
@@ -96,10 +109,15 @@ static ControlBoard control_board;
         if (sample_count >= 500) break;
         if (sample_count != temp) {
             temp = sample_count;
-            tension_data_0[sample_count] = control_board.getLoadCellData(1);
-            pressure_data_0[sample_count] = control_board.getInputPressure(5);
-            tension_data_1[sample_count] = control_board.getLoadCellData(4);
-            pressure_data_1[sample_count] = control_board.getInputPressure(6);
+            tension_data_left[sample_count] = control_board.getLoadCellData(0);
+            pressure_data_left[sample_count] = control_board.getInputPressure(5);
+
+            tension_data_right[sample_count] = control_board.getLoadCellData(6);
+            pressure_data_right[sample_count] = control_board.getInputPressure(7);
+            std::cout << "tension_left = \t" << tension_data_left[sample_count]
+            << "\ttension_right = \t" << tension_data_right[sample_count]
+            << "\tpressure_left = \t" << pressure_data_left[sample_count]
+            << "\tpressure_right = \t" << pressure_data_right[sample_count] << std::endl;
         }
 
 
@@ -115,14 +133,14 @@ static ControlBoard control_board;
         //第二个muscle //Left side
 
         double g_pressure = pressureList[_count];
-        Muscle::muscle_cmd_t m_cmd_6 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = g_pressure, .goal_activation = 0.0};
-        Muscle::muscle_state_t s_6 = muscle_6->updateMuscle(m_cmd_6);
+        Muscle::muscle_cmd_t m_cmd_7 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = g_pressure, .goal_activation = 0.0};
+        Muscle::muscle_state_t s_7 = muscle_7->updateMuscle(m_cmd_7);
         //tension_data_1[sample_count] = control_board.getLoadCellData(1);
         //pressure_data_1[sample_count] = control_board.getInputPressure(1);
 
 
-        std::cout << "tension_right = \t" << control_board.getLoadCellData(1) << "\ttension_left = \t" << control_board.getLoadCellData(4)
-        << "\tpressure_right = \t" << control_board.getInputPressure(5) << "\tpressure_left = \t" << control_board.getInputPressure(6) << std::endl;
+//        std::cout << "tension_right = \t" << control_board.getLoadCellData(1) << "\ttension_left = \t" << control_board.getLoadCellData(4)
+//        << "\tpressure_right = \t" << control_board.getInputPressure(5) << "\tpressure_left = \t" << control_board.getInputPressure(6) << std::endl;
 
     }
 
@@ -134,16 +152,16 @@ static ControlBoard control_board;
 
     for (int i = 0; i < sample_count; i++)
     {
-        file << i << "\ttension_right\t" << tension_data_0[i] << "\ttension_left\t" << tension_data_1[i]
-        << "\tpressure_right\t" << pressure_data_0[i] << "\tpressure_left\t" <<pressure_data_1[i] << std::endl;
+        file << i << "\ttension_left\t" << tension_data_left[i] << "\ttension_right\t" << tension_data_right[i]
+        << "\tpressure_left\t" << pressure_data_left[i] << "\tpressure_right\t" <<pressure_data_right[i] << std::endl;
     }
     file.close();
     std::cout << "write finished"<< std::endl;
 
-    delete[] tension_data_0;
-    delete[] tension_data_1;
-    delete[] pressure_data_0;
-    delete[] pressure_data_1;
+    delete[] tension_data_left;
+    delete[] tension_data_right;
+    delete[] pressure_data_left;
+    delete[] pressure_data_right;
 }
 
 //The Main boilerplate code to set the controlLoop up to be executed with a high priority.
