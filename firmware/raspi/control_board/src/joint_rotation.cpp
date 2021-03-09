@@ -81,11 +81,11 @@ static ControlBoard control_board;
     Muscle::muscle_state_t s_6 = muscle_6->updateMuscle(m_cmd_6);
 
     //存放拉力的数据
-    uint16_t *tension_data_left = new uint16_t[500];
-    uint16_t *tension_data_right = new uint16_t[500];
+    uint16_t *tension_data_left = new uint16_t[1000];
+    uint16_t *tension_data_right = new uint16_t[1000];
     //存放压力的数据
-    double *pressure_data_left = new double[500];
-    double *pressure_data_right = new double[500];
+    double *pressure_data_left = new double[1000];
+    double *pressure_data_right = new double[1000];
 
     int sample_count = 0, temp = -1;
 
@@ -99,14 +99,36 @@ static ControlBoard control_board;
         control_board.update_inputs();
 
         std::chrono::steady_clock::time_point t_1 = std::chrono::steady_clock::now();
-        auto t = std::chrono::duration_cast<std::chrono::milliseconds>(t_1 - t_0); //时间
-        if(sample_count > 499 ) break;
+        auto t = std::chrono::duration_cast<std::chrono::milliseconds>(t_1 - t_0);
 
-        int _count = (10 * t.count() / cycle_time) % 10; //不断遍历之前给出的压力数值表，在一个时间周期内逐个计算index。
+        // Left muscle
+        Muscle::muscle_cmd_t m_cmd_5 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.2, .goal_activation = 0.0};
+        Muscle::muscle_state_t s_5 = muscle_5->updateMuscle(m_cmd_5);
+
+        //Right muscle
+        int _count = (10 * t.count() / cycle_time) % 10;
+        double g_pressure = pressureList[_count];
+        Muscle::muscle_cmd_t m_cmd_7 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = g_pressure, .goal_activation = 0.0};
+        Muscle::muscle_state_t s_7 = muscle_7->updateMuscle(m_cmd_7);
 
 
         sample_count = t.count() / 20; //Sampling Frequency = 50Hz, 每20ms采样一次，一个周期可以采集250个数据。
-        if (sample_count >= 500) break;
+        if (sample_count != temp) {
+            temp = sample_count;
+            tension_data_left[sample_count] = muscle_5->getMuscleState().current_tension_sensor_feedback;
+            pressure_data_left[sample_count] = muscle_5->getMuscleState().current_pressure;
+
+            tension_data_right[sample_count] = muscle_7->getMuscleState().current_tension_sensor_feedback;
+            pressure_data_right[sample_count] = muscle_7->getMuscleState().current_pressure;
+
+            std::cout << "tension_left = \t" << tension_data_left[sample_count]
+                      << "\ttension_right = \t" << tension_data_right[sample_count]
+                      << "\tpressure_left = \t" << pressure_data_left[sample_count]
+                      << "\tpressure_right = \t" << pressure_data_right[sample_count] << std::endl;
+        } else if (sample_count >= 500) {
+            break;
+        }
+/*
         if (sample_count != temp) {
             temp = sample_count;
             tension_data_left[sample_count] = control_board.getLoadCellData(0);
@@ -118,10 +140,12 @@ static ControlBoard control_board;
             << "\ttension_right = \t" << tension_data_right[sample_count]
             << "\tpressure_left = \t" << pressure_data_left[sample_count]
             << "\tpressure_right = \t" << pressure_data_right[sample_count] << std::endl;
+        } else if (sample_count >= 500) {
+            break;
         }
+*/
 
-
-
+/*
         //Creating the command for controlling the muscle // Right muscle
         Muscle::muscle_cmd_t m_cmd_5 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.2, .goal_activation = 0.0};
         //The update also always returns the current state of the muscle.
@@ -137,7 +161,7 @@ static ControlBoard control_board;
         Muscle::muscle_state_t s_7 = muscle_7->updateMuscle(m_cmd_7);
         //tension_data_1[sample_count] = control_board.getLoadCellData(1);
         //pressure_data_1[sample_count] = control_board.getInputPressure(1);
-
+*/
 
 //        std::cout << "tension_right = \t" << control_board.getLoadCellData(1) << "\ttension_left = \t" << control_board.getLoadCellData(4)
 //        << "\tpressure_right = \t" << control_board.getInputPressure(5) << "\tpressure_left = \t" << control_board.getInputPressure(6) << std::endl;
