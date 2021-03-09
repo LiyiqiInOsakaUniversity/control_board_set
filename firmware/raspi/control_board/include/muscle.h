@@ -44,7 +44,8 @@ public:
   Muscle(muscle_cfg_t muscle_config);
   ~Muscle();
 
-  [[nodiscard]]muscle_state_t updateMuscle(muscle_cmd_t muscle_cmd);
+  muscle_state_t updateMuscle(muscle_cmd_t muscle_cmd);
+  muscle_state_t getMuscleState();
 
 private:
   uint16_t adc_index_;
