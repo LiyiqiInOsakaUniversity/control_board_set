@@ -50,6 +50,13 @@ Muscle::muscle_state_t Muscle::updateMuscle(Muscle::muscle_cmd_t muscle_cmd)
           .current_tension_sensor_feedback = board_->getLoadCellData(tension_sensor_index_)};
 }
 
+Muscle::muscle_state_t Muscle::getMuscleState()
+{
+  return {.current_activation = current_activation_,
+          .current_pressure = board_->getInputPressure(adc_index_),
+          .current_tension_sensor_feedback = board_->getLoadCellData(tension_sensor_index_)};
+}
+
 void Muscle::initialize_valves(){
   board_->setOutputVoltage(dac_index_, 7.0);
   usleep(100);
