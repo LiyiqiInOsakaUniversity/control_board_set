@@ -22,6 +22,7 @@ public:
   };
 
   struct muscle_cfg_t{
+      //设置接口
     uint16_t adc_index;
     uint16_t dac_index;
     uint16_t tension_sensor_index;
@@ -30,21 +31,26 @@ public:
   };
 
   struct muscle_state_t{
+      //muscle状态
     double current_activation;
     double current_pressure;
     uint16_t current_tension_sensor_feedback;
   };
 
   struct muscle_cmd_t{
+      //muscle指令
     ControlMode control_mode;
     double goal_pressure;
     double goal_activation;
   };
 
   Muscle(muscle_cfg_t muscle_config);
+  //根据configation设置每个肌肉的接口
   ~Muscle();
 
+  //根据muscle指令，更新muscle状态
   muscle_state_t updateMuscle(muscle_cmd_t muscle_cmd);
+  //得到muscle当前状态
   muscle_state_t getMuscleState();
 
 private:

@@ -1,12 +1,13 @@
 #include <muscle.h>
 
 Muscle::Muscle(Muscle::muscle_cfg_t muscle_config)
+//把外部的configuration参数传入新建的muscle对象
 {
   adc_index_ = muscle_config.adc_index;
   dac_index_ = muscle_config.dac_index;
   tension_sensor_index_ = muscle_config.tension_sensor_index;
-  board_ = muscle_config.board;
-
+  board_ = muscle_config.board; //board指针
+    //pid_controller pointer -- 新建一个PidController对象
   pid_controller_ = new PidController(muscle_config.pid_cfg.p, muscle_config.pid_cfg.i, muscle_config.pid_cfg.d,
                                       muscle_config.pid_cfg.upper_clamp, muscle_config.pid_cfg.lower_clamp);
 
