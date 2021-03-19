@@ -43,14 +43,14 @@ static ControlBoard control_board;
     Muscle::muscle_cfg_t muscle_conf_4 = {.adc_index = 4, .dac_index = 12, .tension_sensor_index = 4,
             .pid_cfg = pid_conf, .board = &control_board};
 
-    //上面的金哥用了，我用5和7 （5是右边的肌肉，7是左边的肌肉） 6的阀坏掉了
-    Muscle::muscle_cfg_t muscle_conf_5 = {.adc_index = 5, .dac_index = 13, .tension_sensor_index = 5,
+    //上面的金哥用了，我用5和7 （5是左边的肌肉，7是右边的肌肉） 6的阀坏掉了
+    Muscle::muscle_cfg_t muscle_conf_5 = {.adc_index = 5, .dac_index = 13, .tension_sensor_index = 0,
             .pid_cfg = pid_conf, .board = &control_board};
 
     Muscle::muscle_cfg_t muscle_conf_6 = {.adc_index = 6, .dac_index = 14, .tension_sensor_index = 6,
             .pid_cfg = pid_conf, .board = &control_board};
 
-    Muscle::muscle_cfg_t muscle_conf_7 = {.adc_index = 7, .dac_index = 15, .tension_sensor_index = 7,
+    Muscle::muscle_cfg_t muscle_conf_7 = {.adc_index = 7, .dac_index = 15, .tension_sensor_index = 4,
             .pid_cfg = pid_conf, .board = &control_board};
 
     // Using auto to avoid repeating Classname
@@ -128,48 +128,8 @@ static ControlBoard control_board;
         } else if (sample_count >= 500) {
             break;
         }
-/*
-        if (sample_count != temp) {
-            temp = sample_count;
-            tension_data_left[sample_count] = control_board.getLoadCellData(0);
-            pressure_data_left[sample_count] = control_board.getInputPressure(5);
-
-            tension_data_right[sample_count] = control_board.getLoadCellData(6);
-            pressure_data_right[sample_count] = control_board.getInputPressure(7);
-            std::cout << "tension_left = \t" << tension_data_left[sample_count]
-            << "\ttension_right = \t" << tension_data_right[sample_count]
-            << "\tpressure_left = \t" << pressure_data_left[sample_count]
-            << "\tpressure_right = \t" << pressure_data_right[sample_count] << std::endl;
-        } else if (sample_count >= 500) {
-            break;
-        }
-*/
-
-/*
-        //Creating the command for controlling the muscle // Right muscle
-        Muscle::muscle_cmd_t m_cmd_5 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.2, .goal_activation = 0.0};
-        //The update also always returns the current state of the muscle.
-        //This is how the muscle state should be received and discarding the return value will result in a compiler warning
-        Muscle::muscle_state_t s_5 = muscle_5->updateMuscle(m_cmd_5);
-        //tension_data_0[sample_count] = control_board.getLoadCellData(0);
-        //pressure_data_0[sample_count] = control_board.getInputPressure(0);
-
-        //第二个muscle //Left side
-
-        double g_pressure = pressureList[_count];
-        Muscle::muscle_cmd_t m_cmd_7 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = g_pressure, .goal_activation = 0.0};
-        Muscle::muscle_state_t s_7 = muscle_7->updateMuscle(m_cmd_7);
-        //tension_data_1[sample_count] = control_board.getLoadCellData(1);
-        //pressure_data_1[sample_count] = control_board.getInputPressure(1);
-*/
-
-//        std::cout << "tension_right = \t" << control_board.getLoadCellData(1) << "\ttension_left = \t" << control_board.getLoadCellData(4)
-//        << "\tpressure_right = \t" << control_board.getInputPressure(5) << "\tpressure_left = \t" << control_board.getInputPressure(6) << std::endl;
-
     }
 
-
-    //delay(1000);
     std::cout << "prepare to write data to file" << std::endl;
     std::ofstream file;
     file.open("data.txt", std::ios::out | std::ios::app);
