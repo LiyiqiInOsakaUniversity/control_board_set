@@ -57,7 +57,7 @@ target_link_libraries(joint_rotation
         control_board
         ${Boost_LIBRARIES}
         )
-add_executable(joint_rotation src/muscle_adjust.cpp)
+add_executable(muscle_adjust src/muscle_adjust.cpp)
 target_link_libraries(muscle_adjust
         rt
         control_board

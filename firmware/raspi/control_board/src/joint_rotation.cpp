@@ -17,11 +17,8 @@
 #include <control_board.h>
 #include <muscle.h>
 
-//#define PI acos(-1)
-
 static ControlBoard control_board;
 
-//Function for control code
 [[noreturn]] void *controlLoop(void *)
 {
     //Neutral Position of Valve is at 5V. So clamps are set to -4.5V and 4.5V for effective control voltages of 0.5 to 9.5V
@@ -50,7 +47,7 @@ static ControlBoard control_board;
     Muscle::muscle_cfg_t muscle_conf_6 = {.adc_index = 6, .dac_index = 14, .tension_sensor_index = 6,
             .pid_cfg = pid_conf, .board = &control_board};
 
-    Muscle::muscle_cfg_t muscle_conf_7 = {.adc_index = 7, .dac_index = 15, .tension_sensor_index = 4,
+    Muscle::muscle_cfg_t muscle_conf_7 = {.adc_index = 7, .dac_index = 15, .tension_sensor_index = 2,
             .pid_cfg = pid_conf, .board = &control_board};
 
     // Using auto to avoid repeating Classname
@@ -67,29 +64,30 @@ static ControlBoard control_board;
     // The program ends and we rely on the OS to clean up our mess.
     // Shouldn't be a real problem at the end of a program but it is not a good style.
     // All memory allocated on the heap should be freed at one point.
-    Muscle::muscle_cmd_t m_cmd_0 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_cmd_t m_cmd_0 = {.control_mode = Muscle::ControlMode::activation, .goal_pressure = 0.0, .goal_activation = 0.0};
     Muscle::muscle_state_t s_0 = muscle_0->updateMuscle(m_cmd_0);
-    Muscle::muscle_cmd_t m_cmd_1 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_cmd_t m_cmd_1 = {.control_mode = Muscle::ControlMode::activation, .goal_pressure = 0.0, .goal_activation = 0.0};
     Muscle::muscle_state_t s_1 = muscle_1->updateMuscle(m_cmd_1);
-    Muscle::muscle_cmd_t m_cmd_2 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_cmd_t m_cmd_2 = {.control_mode = Muscle::ControlMode::activation, .goal_pressure = 0.0, .goal_activation = 0.0};
     Muscle::muscle_state_t s_2 = muscle_2->updateMuscle(m_cmd_2);
-    Muscle::muscle_cmd_t m_cmd_3 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_cmd_t m_cmd_3 = {.control_mode = Muscle::ControlMode::activation, .goal_pressure = 0.0, .goal_activation = 0.0};
     Muscle::muscle_state_t s_3 = muscle_3->updateMuscle(m_cmd_3);
-    Muscle::muscle_cmd_t m_cmd_4 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_cmd_t m_cmd_4 = {.control_mode = Muscle::ControlMode::activation, .goal_pressure = 0.0, .goal_activation = 0.0};
     Muscle::muscle_state_t s_4 = muscle_4->updateMuscle(m_cmd_4);
-    Muscle::muscle_cmd_t m_cmd_6 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_cmd_t m_cmd_6 = {.control_mode = Muscle::ControlMode::activation, .goal_pressure = 0.0, .goal_activation = 0.0};
     Muscle::muscle_state_t s_6 = muscle_6->updateMuscle(m_cmd_6);
 
     //存放拉力的数据
-    uint16_t *tension_data_left = new uint16_t[1000];
-    uint16_t *tension_data_right = new uint16_t[1000];
+    uint16_t *tension_data_left = new uint16_t[2500];
+    uint16_t *tension_data_right = new uint16_t[2500];
     //存放压力的数据
-    double *pressure_data_left = new double[1000];
-    double *pressure_data_right = new double[1000];
+    double *pressure_data_left = new double[2500];
+    double *pressure_data_right = new double[2500];
 
     int sample_count = 0, temp = -1;
 
-    double pressureList[10] = {0.2, 0.238197, 0.338197, 0.461803, 0.561803, 0.6, 0.561803, 0.461803, 0.338197, 0.238197};
+    double pressureList[20] = {0.2, 0.207342, 0.228647, 0.261832, 0.303647, 0.35, 0.396353, 0.438168, 0.471353, 0.492658,
+                               0.5, 0.495287, 0.471353, 0.438168, 0.396353, 0.35, 0.303647, 0.261832, 0.228647, 0.207342};
     int cycle_time = 5000; //5000ms, = 5s
     std::chrono::steady_clock::time_point t_0 = std::chrono::steady_clock::now();
     while(true)
@@ -106,7 +104,7 @@ static ControlBoard control_board;
         Muscle::muscle_state_t s_5 = muscle_5->updateMuscle(m_cmd_5);
 
         //Right muscle
-        int _count = (10 * t.count() / cycle_time) % 10;
+        int _count = (20 * t.count() / cycle_time) % 20;
         double g_pressure = pressureList[_count];
         Muscle::muscle_cmd_t m_cmd_7 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = g_pressure, .goal_activation = 0.0};
         Muscle::muscle_state_t s_7 = muscle_7->updateMuscle(m_cmd_7);
@@ -125,7 +123,7 @@ static ControlBoard control_board;
                       << "\ttension_right = \t" << tension_data_right[sample_count]
                       << "\tpressure_left = \t" << pressure_data_left[sample_count]
                       << "\tpressure_right = \t" << pressure_data_right[sample_count] << std::endl;
-        } else if (sample_count >= 500) {
+        } else if (sample_count >= 2000) {
             break;
         }
     }

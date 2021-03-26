@@ -68,11 +68,11 @@ static ControlBoard control_board;
     {
         control_board.update_inputs();
 
-        Muscle::muscle_cmd_t m_cmd = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.2, .goal_activation = 0.0};
-        Muscle::muscle_state_t s_left = muscle_5->updateMuscle(m_cmd);
+        Muscle::muscle_cmd_t m_cmd_left = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.2, .goal_activation = 0.0};
+        Muscle::muscle_state_t s_left = muscle_5->updateMuscle(m_cmd_left);
 
-        Muscle::muscle_cmd_t m_cmd = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.4, .goal_activation = 0.0};
-        Muscle::muscle_state_t s_right = muscle_7->updateMuscle(m_cmd);
+        Muscle::muscle_cmd_t m_cmd_right = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.4, .goal_activation = 0.0};
+        Muscle::muscle_state_t s_right = muscle_7->updateMuscle(m_cmd_right);
 
         if(muscle_5->getMuscleState().current_pressure > 0.15 && muscle_5->getMuscleState().current_pressure < 0.25)
         {

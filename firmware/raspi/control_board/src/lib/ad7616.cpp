@@ -25,12 +25,14 @@ void AD7616::prepareChannel(uint8_t channel, int cs)
 uint32_t  AD7616::getMeasurementPair(int cs, uint8_t channel)
 {
   prepareChannel(channel, cs);
+  //cs = RPI_GPIO_P1_07
 
   gpio_->set_output(trigger_measurement_gpio_, Embedded_GPIO::gpio_state::ON);
   gpio_->set_output(trigger_measurement_gpio_, Embedded_GPIO::gpio_state::OFF);
 
   dev_->transferSPI(cs, 4, tx_buffer_, rx_buffer_);
-
+//    char rx_buffer_[4] = {0, 0, 0, 0};
+//    char tx_buffer_[4] = {0, 0, 0, 0};
   uint32_t  ret = 0;
   ret = (uint8_t)rx_buffer_[0] << 24 | (uint8_t)rx_buffer_[1] << 16 | (uint8_t)rx_buffer_[2] << 8 | (uint8_t)rx_buffer_[3];
 
