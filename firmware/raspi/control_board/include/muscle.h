@@ -24,6 +24,7 @@ public:
   struct muscle_cfg_t{
       //设置接口
     uint16_t adc_index;
+    //两个通道同步采样，V0A只能和V0B同时采样
     uint16_t dac_index;
     uint16_t tension_sensor_index;
     pid_cfg_t pid_cfg;
@@ -35,6 +36,8 @@ public:
     double current_activation;
     double current_pressure;
     uint16_t current_tension_sensor_feedback;
+
+    double current_ms_resistance;
   };
 
   struct muscle_cmd_t{

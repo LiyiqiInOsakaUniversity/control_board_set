@@ -11,6 +11,8 @@
 #include <ad7730.h>
 
 #define NUMBER_OF_TRANSDUCERS 8
+#define V_REF 2.5
+#define RESISTOR_VALUE 0.10245
 
 class ControlBoard{
 public:
@@ -22,6 +24,8 @@ public:
   double getInputVoltage(uint8_t input);
 
   double getInputPressure(uint8_t input);
+
+    double getMuscleSpindleResistance(uint8_t input, std::string command);
 
   uint16_t  getLoadCellData(uint8_t input);
 

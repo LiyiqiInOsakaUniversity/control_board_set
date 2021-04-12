@@ -84,6 +84,23 @@ double ControlBoard::getInputPressure(uint8_t input)
   return (1.0 / 4.0) * ((getInputVoltage(input)) - 1.0);
 }
 
+double ControlBoard::getMuscleSpindleResistance(uint8_t input, std::string command)
+{
+    if (command == "mshi")
+    {   double voltage = getInputVoltage(15 - input);
+        return (V_REF - voltage) / (voltage / 1000);
+    }
+    else if (command == "mslo")
+    {
+        double voltage = getInputVoltage(15 - input);
+        return voltage / RESISTOR_VALUE;
+    }
+    else
+    {
+        return DOUBLE_MIN;
+    }
+}
+
 uint16_t ControlBoard::getLoadCellData(uint8_t input)
 {
   return load_cell_data_[input];

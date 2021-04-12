@@ -33,6 +33,8 @@ bool RaspberryPi_SPI::transferSPI(int cs, int data_len, char data[])
 bool RaspberryPi_SPI::transferSPI(int cs, int data_len, char data_tx[], char data_rx[])
 {
   gpio_->set_output(cs, Embedded_GPIO::gpio_state::OFF);
+    //CS下降沿使数据输出线路SDOA 和 SDOB脱离三态，并输出转换结果的MSB。
+    //CS保持低电平对全部数据进行传输
   bcm2835_spi_transfernb(data_tx, data_rx, data_len);
   gpio_->set_output(cs, Embedded_GPIO::gpio_state::ON);
   return true;
