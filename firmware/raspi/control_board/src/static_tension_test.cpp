@@ -46,7 +46,7 @@ static ControlBoard control_board;
     Muscle::muscle_cfg_t muscle_conf_6 = {.adc_index = 6, .dac_index = 14, .tension_sensor_index = 6,
             .pid_cfg = pid_conf, .board = &control_board};
 
-    Muscle::muscle_cfg_t muscle_conf_7 = {.adc_index = 7, .dac_index = 15, .tension_sensor_index = 4,
+    Muscle::muscle_cfg_t muscle_conf_7 = {.adc_index = 7, .dac_index = 15, .tension_sensor_index = 2,
             .pid_cfg = pid_conf, .board = &control_board};
 
     // Using auto to avoid repeating Classname
