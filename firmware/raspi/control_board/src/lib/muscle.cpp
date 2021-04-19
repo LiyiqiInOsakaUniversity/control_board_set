@@ -48,14 +48,18 @@ Muscle::muscle_state_t Muscle::updateMuscle(Muscle::muscle_cmd_t muscle_cmd)
 
   return {.current_activation = current_activation_,
           .current_pressure = board_->getInputPressure(adc_index_),
-          .current_tension_sensor_feedback = board_->getLoadCellData(tension_sensor_index_)};
+          .current_tension_sensor_feedback = board_->getLoadCellData(tension_sensor_index_),
+            .current_ms_resistance = board_->getMuscleSpindleResistance(adc_index_, muscle_cmd.mslo_mshi)
+  };
 }
 
 Muscle::muscle_state_t Muscle::getMuscleState()
 {
   return {.current_activation = current_activation_,
           .current_pressure = board_->getInputPressure(adc_index_),
-          .current_tension_sensor_feedback = board_->getLoadCellData(tension_sensor_index_)};
+          .current_tension_sensor_feedback = board_->getLoadCellData(tension_sensor_index_),
+          .current_ms_resistance = board_->getMuscleSpindleResistance(adc_index_, 0)
+  };
 }
 
 void Muscle::initialize_valves(){

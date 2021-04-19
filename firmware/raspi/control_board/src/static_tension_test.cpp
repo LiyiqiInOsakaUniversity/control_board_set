@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <chrono>
 #include <iostream>
-
+#include <fstream>
 
 #include <control_board.h>
 #include <muscle.h>
@@ -64,32 +64,62 @@ static ControlBoard control_board;
     // Shouldn't be a real problem at the end of a program but it is not a good style.
     // All memory allocated on the heap should be freed at one point.
 
+    //存放拉力的数据
+    uint16_t *tension_data_left = new uint16_t[2500];
+    uint16_t *tension_data_right = new uint16_t[2500];
+    //存放压力的数据
+    double *pressure_data_left = new double[2500];
+    double *pressure_data_right = new double[2500];
+
+    int sample_count = 0, temp = -1;
+
+    std::chrono::steady_clock::time_point t_0 = std::chrono::steady_clock::now();
     while(true)
     {
         control_board.update_inputs();
 
-        Muscle::muscle_cmd_t m_cmd_left = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.2, .goal_activation = 0.0};
+        std::chrono::steady_clock::time_point t_1 = std::chrono::steady_clock::now();
+        auto t = std::chrono::duration_cast<std::chrono::milliseconds>(t_1 - t_0);
+
+        Muscle::muscle_cmd_t m_cmd_left = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.2, .goal_activation = 0.0, .mslo_mshi = 0};
         Muscle::muscle_state_t s_left = muscle_5->updateMuscle(m_cmd_left);
 
-        Muscle::muscle_cmd_t m_cmd_right = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.4, .goal_activation = 0.0};
+        Muscle::muscle_cmd_t m_cmd_right = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.4, .goal_activation = 0.0, .mslo_mshi = 0};
         Muscle::muscle_state_t s_right = muscle_7->updateMuscle(m_cmd_right);
 
-        if(muscle_5->getMuscleState().current_pressure > 0.15 && muscle_5->getMuscleState().current_pressure < 0.25)
-        {
-            std::cout << "Success: " << muscle_5->getMuscleState().current_pressure << "MPa" << std::endl;
-        } else
-        {
-            std::cout << "Still some controlling to do: " << muscle_5->getMuscleState().current_pressure << "MPa" << std::endl;
-        }
+        sample_count = t.count() / 20; //Sampling Frequency = 50Hz, 每20ms采样一次，一个周期可以采集250个数据。
+        if (sample_count != temp) {
+            temp = sample_count;
+            tension_data_left[sample_count] = muscle_5->getMuscleState().current_tension_sensor_feedback;
+            pressure_data_left[sample_count] = muscle_5->getMuscleState().current_pressure;
 
-        if(muscle_7->getMuscleState().current_pressure > 0.35 && muscle_7->getMuscleState().current_pressure < 0.45)
-        {
-            std::cout << "Success: " << muscle_7->getMuscleState().current_pressure << "MPa" << std::endl;
-        } else
-        {
-            std::cout << "Still some controlling to do: " << muscle_7->getMuscleState().current_pressure << "MPa" << std::endl;
+            tension_data_right[sample_count] = muscle_7->getMuscleState().current_tension_sensor_feedback;
+            pressure_data_right[sample_count] = muscle_7->getMuscleState().current_pressure;
+
+            std::cout << "tension_left = \t" << tension_data_left[sample_count]
+                      << "\ttension_right = \t" << tension_data_right[sample_count]
+                      << "\tpressure_left = \t" << pressure_data_left[sample_count]
+                      << "\tpressure_right = \t" << pressure_data_right[sample_count] << std::endl;
+        } else if (sample_count >= 1000) {
+            break;
         }
     }
+    std::cout << "prepare to write data to file" << std::endl;
+    std::ofstream file;
+    file.open("data.txt", std::ios::out | std::ios::app);
+
+    for (int i = 0; i < sample_count; i++)
+    {
+        file << i << "\ttension_left\t" << tension_data_left[i] << "\ttension_right\t" << tension_data_right[i]
+             << "\tpressure_left\t" << pressure_data_left[i] << "\tpressure_right\t" <<pressure_data_right[i] << std::endl;
+    }
+    file.close();
+    std::cout << "write finished"<< std::endl;
+
+    delete[] tension_data_left;
+    delete[] tension_data_right;
+    delete[] pressure_data_left;
+    delete[] pressure_data_right;
 }
 
 //The Main boilerplate code to set the controlLoop up to be executed with a high priority.

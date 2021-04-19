@@ -45,6 +45,8 @@ public:
     ControlMode control_mode;
     double goal_pressure;
     double goal_activation;
+
+    uint8_t mslo_mshi;
   };
 
   Muscle(muscle_cfg_t muscle_config);

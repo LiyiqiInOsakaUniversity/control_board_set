@@ -25,7 +25,7 @@ public:
 
   double getInputPressure(uint8_t input);
 
-    double getMuscleSpindleResistance(uint8_t input, std::string command);
+    double getMuscleSpindleResistance(uint8_t input, uint8_t command);
 
   uint16_t  getLoadCellData(uint8_t input);
 
