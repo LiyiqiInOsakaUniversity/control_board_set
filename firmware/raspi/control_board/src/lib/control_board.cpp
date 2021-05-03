@@ -63,7 +63,7 @@ void ControlBoard::update_inputs()
   {
     uint32_t adc_rx = adc_->getMeasurementPair(adc_cs_, idx);
     adc_data_[idx] = (uint16_t) ((adc_rx & 0xFFFF0000) >> 16);
-    adc_data_[15 - idx] = (uint16_t) (adc_rx & 0x0000FFFF);
+    adc_data_[idx + 8] = (uint16_t) (adc_rx & 0x0000FFFF);
   }
 
   //LOAD CELLS
