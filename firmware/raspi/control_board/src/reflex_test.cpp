@@ -1,7 +1,6 @@
 //
-// Created by Sherry Wang on 2021/3/19.
+// Created by Sherry Wang on 2021/4/20.
 //
-
 #include <cstdio>
 #include <csignal>
 #include <ctime>
@@ -12,13 +11,16 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
+#includ <math.h>
 
 #include <control_board.h>
 #include <muscle.h>
 
+#define PI acos(-1)
+#define TENSION_SCALE_LEFT 8000
+#define TENSION_SCALE_RIGHT 6000
 static ControlBoard control_board;
 
-//Function for control code
 [[noreturn]] void *controlLoop(void *)
 {
     //Neutral Position of Valve is at 5V. So clamps are set to -4.5V and 4.5V for effective control voltages of 0.5 to 9.5V
@@ -40,6 +42,7 @@ static ControlBoard control_board;
     Muscle::muscle_cfg_t muscle_conf_4 = {.adc_index = 4, .dac_index = 12, .tension_sensor_index = 4,
             .pid_cfg = pid_conf, .board = &control_board};
 
+    //上面的金哥用了，我用5和7 （5是左边的肌肉，7是右边的肌肉） 6的阀坏掉了
     Muscle::muscle_cfg_t muscle_conf_5 = {.adc_index = 5, .dac_index = 13, .tension_sensor_index = 0,
             .pid_cfg = pid_conf, .board = &control_board};
 
@@ -63,6 +66,18 @@ static ControlBoard control_board;
     // The program ends and we rely on the OS to clean up our mess.
     // Shouldn't be a real problem at the end of a program but it is not a good style.
     // All memory allocated on the heap should be freed at one point.
+    Muscle::muscle_cmd_t m_cmd_0 = {.control_mode = Muscle::ControlMode::activation, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_state_t s_0 = muscle_0->updateMuscle(m_cmd_0);
+    Muscle::muscle_cmd_t m_cmd_1 = {.control_mode = Muscle::ControlMode::activation, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_state_t s_1 = muscle_1->updateMuscle(m_cmd_1);
+    Muscle::muscle_cmd_t m_cmd_2 = {.control_mode = Muscle::ControlMode::activation, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_state_t s_2 = muscle_2->updateMuscle(m_cmd_2);
+    Muscle::muscle_cmd_t m_cmd_3 = {.control_mode = Muscle::ControlMode::activation, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_state_t s_3 = muscle_3->updateMuscle(m_cmd_3);
+    Muscle::muscle_cmd_t m_cmd_4 = {.control_mode = Muscle::ControlMode::activation, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_state_t s_4 = muscle_4->updateMuscle(m_cmd_4);
+    Muscle::muscle_cmd_t m_cmd_6 = {.control_mode = Muscle::ControlMode::activation, .goal_pressure = 0.0, .goal_activation = 0.0};
+    Muscle::muscle_state_t s_6 = muscle_6->updateMuscle(m_cmd_6);
 
     //存放拉力的数据
     uint16_t *tension_data_left = new uint16_t[2500];
@@ -73,40 +88,53 @@ static ControlBoard control_board;
 
     int sample_count = 0, temp = -1;
 
+    //double pressureList[20] = {0.2, 0.207342, 0.228647, 0.261832, 0.303647, 0.35, 0.396353, 0.438168, 0.471353, 0.492658,
+    //                           0.5, 0.495287, 0.471353, 0.438168, 0.396353, 0.35, 0.303647, 0.261832, 0.228647, 0.207342};
+    int cycle_time = 5000; //5000ms, = 5s
     std::chrono::steady_clock::time_point t_0 = std::chrono::steady_clock::now();
     while(true)
     {
+        //Update the board's inputs (ADC & Load Cells)
+        //DACs are still updated on-demand
         control_board.update_inputs();
 
         std::chrono::steady_clock::time_point t_1 = std::chrono::steady_clock::now();
         auto t = std::chrono::duration_cast<std::chrono::milliseconds>(t_1 - t_0);
 
-        Muscle::muscle_cmd_t m_cmd_left = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.2, .goal_activation = 0.0, .mslo_mshi = 0};
-        Muscle::muscle_state_t s_left = muscle_5->updateMuscle(m_cmd_left);
+        // Left muscle
+        Muscle::muscle_cmd_t m_cmd_5 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.2, .goal_activation = 0.0};
+        Muscle::muscle_state_t s_5 = muscle_5->updateMuscle(m_cmd_5);
 
-        Muscle::muscle_cmd_t m_cmd_right = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = 0.2, .goal_activation = 0.0, .mslo_mshi = 0};
-        Muscle::muscle_state_t s_right = muscle_7->updateMuscle(m_cmd_right);
+        //Right muscle
+//        int _count = (20 * t.count() / cycle_time) % 20;
+//        double g_pressure = pressureList[_count];
+        double g_pressure = 0.15 * sin((2 * PI / cycle_time) * t - PI/2) + 0.35;
+        Muscle::muscle_cmd_t m_cmd_7 = {.control_mode = Muscle::ControlMode::pressure, .goal_pressure = g_pressure, .goal_activation = 0.0};
+        Muscle::muscle_state_t s_7 = muscle_7->updateMuscle(m_cmd_7);
+
+        uint16_t _error = muscle_7->getMuscleState().current_tension_sensor_feedback - muscle_5->getMuscleState().current_tension_sensor_feedback;
 
         sample_count = t.count() / 20; //Sampling Frequency = 50Hz, 每20ms采样一次，一个周期可以采集250个数据。
         if (sample_count != temp) {
             temp = sample_count;
-            tension_data_left[sample_count] = muscle_5->getMuscleState().current_tension_sensor_feedback;
+            tension_data_left[sample_count] = muscle_5->getMuscleState().current_tension_sensor_feedback / TENSION_SCLAE_LEFT;
             pressure_data_left[sample_count] = muscle_5->getMuscleState().current_pressure;
 
-            tension_data_right[sample_count] = muscle_7->getMuscleState().current_tension_sensor_feedback;
+            tension_data_right[sample_count] = muscle_7->getMuscleState().current_tension_sensor_feedback / TENSION_SCLAE_RIGHT;
             pressure_data_right[sample_count] = muscle_7->getMuscleState().current_pressure;
 
             std::cout << "tension_left = \t" << tension_data_left[sample_count]
                       << "\ttension_right = \t" << tension_data_right[sample_count]
                       << "\tpressure_left = \t" << pressure_data_left[sample_count]
                       << "\tpressure_right = \t" << pressure_data_right[sample_count] << std::endl;
-        } else if (sample_count >= 1000) {
+        } else if (sample_count >= 2000) {
             break;
         }
     }
+
     std::cout << "prepare to write data to file" << std::endl;
     std::ofstream file;
-    file.open("left_0.2_right_0.2.xlsx", std::ios::out | std::ios::app);
+    file.open("data.txt", std::ios::out | std::ios::app);
 
     for (int i = 0; i < sample_count; i++)
     {
